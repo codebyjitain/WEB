@@ -2,9 +2,8 @@ const express = require('express')
 const app = express()
 const port = 3000
 const route = require('./routes/route')
-const connectDB = require('./db') 
+const connectDB = require('./db')
 
-app.use(express.json())
 
 connectDB()
 
@@ -18,8 +17,12 @@ connectDB()
 // app.use(loginMiddleware)
 // // app.use(express.json());
 
+app.use(express.json())
 
-app.use('/api',route)
+
+
+app.use('/api', route)
+
 app.get('/', (req, res) => {
   console.log("Hello");
   // res.send('Hello World!')
