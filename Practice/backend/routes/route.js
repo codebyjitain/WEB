@@ -25,9 +25,43 @@ router.post('/users',async (req,res)=>{
     }
 })
 
+router.put('/users/:id', async (req,res)=>{
+    const {id} = req.params;
+    const {name, age , weight} = req.body;
+    try {
+        const updatedUser = await userModel.findByIdAndUpdate(id,{name,age,weight});
 
+        if(!updatedUser){
+            res.json({
+                message: "No Data available to update"
+            })
+        }
+        res.status(201).json({
+            success: true,
+            message: updatedUser
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+})
 
+router.delete('/users/:id', async(req,res)=>{
+    const {id} = req.params
 
+    try {
+        const deletedUser = await userModel.findByIdAndDelete(id);
+
+        res.status(200).json({
+            message: "user Deleted"
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+})
 
 
 
