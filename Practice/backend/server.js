@@ -1,8 +1,9 @@
+const path = require('path')
 const express = require('express')
 const app = express()
 const port = 3000
-const route = require('./routes/route')
-const connectDB = require('./db')
+// const route = require('./routes/route')
+// const connectDB = require('./db')
 
 
 // connectDB()
@@ -19,8 +20,9 @@ const connectDB = require('./db')
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+// app.use(express.static(path.join(__dirname, 'public')))
 app.set('view engine' , 'ejs')
-
+// console.log(path.join(__dirname, 'public'))
 
 // app.use('/api', route)
 
