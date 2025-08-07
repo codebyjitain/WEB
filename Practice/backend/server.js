@@ -33,6 +33,11 @@ app.get('/', (req, res) => {
 
 })
 
+app.get('/dynamic/:x' , (req,res) =>{
+  // req.params.x --> for geeting x
+  res.send("It is running")
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
