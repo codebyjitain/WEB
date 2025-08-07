@@ -5,7 +5,7 @@ const route = require('./routes/route')
 const connectDB = require('./db')
 
 
-connectDB()
+// connectDB()
 
 // custom middleware
 
@@ -18,14 +18,16 @@ connectDB()
 // // app.use(express.json());
 
 app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+app.set('view engine' , 'ejs')
 
 
-
-app.use('/api', route)
+// app.use('/api', route)
 
 app.get('/', (req, res) => {
-  console.log("Hello");
+  // console.log("Hello");
   // res.send('Hello World!')
+  res.render("index")
 
 })
 
