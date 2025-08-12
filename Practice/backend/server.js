@@ -1,43 +1,109 @@
-const path = require('path')
 const express = require('express')
 const app = express()
-const port = 3000
-// const route = require('./routes/route')
-// const connectDB = require('./db')
+const path = require('path')
+const fs = require('node:fs')
+const { log } = require('node:console')
 
 
-// connectDB()
-
-// custom middleware
-
-// const loginMiddleware = function (req,res,next) {
-//   console.log("login");
-//   next();
-// }
-
-// app.use(loginMiddleware)
-// // app.use(express.json());
-
+app.set("view engine", "ejs")
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-// app.use(express.static(path.join(__dirname, 'public')))
-app.set('view engine' , 'ejs')
-// console.log(path.join(__dirname, 'public'))
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static(path.join(__dirname, "public")))
 
-// app.use('/api', route)
 
-app.get('/', (req, res) => {
-  // console.log("Hello");
-  // res.send('Hello World!')
-  res.render("index")
+app.get("/", (req, res) => {
+  fs.readdir(`./files`, function (err, files) {
+    res.render('index', { files: files })
+  })
+})
+
+app.get("/file/:filename", (req, res) => {
+  fs.readFile(`./files/${req.params.filename}`,"utf-8", function (err, filedata) {
+    res.render("show" , {filename : req.params.filename.split('.')[0] , filedata : filedata} )
+  })
+})
+
+app.post('/create', (req, res) => {
+
+  fs.writeFile(`./files/${req.body.title.split(' ').join('')}.txt`, req.body.details, function (err) {
+    res.redirect("/")
+  })
 
 })
 
-app.get('/dynamic/:x' , (req,res) =>{
-  // req.params.x --> for geeting x
-  res.send("It is running")
-})
+app.listen(3000)
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const path = require('path')
+// const express = require('express')
+// const app = express()
+// const port = 3000
+// // const route = require('./routes/route')
+// // const connectDB = require('./db')
+
+
+// // connectDB()
+
+// // custom middleware
+
+// // const loginMiddleware = function (req,res,next) {
+// //   console.log("login");
+// //   next();
+// // }
+
+// // app.use(loginMiddleware)
+// // // app.use(express.json());
+
+// app.use(express.json())
+// app.use(express.urlencoded({extended: true}))
+// // app.use(express.static(path.join(__dirname, 'public')))
+// app.set('view engine' , 'ejs')
+// // console.log(path.join(__dirname, 'public'))
+
+// // app.use('/api', route)
+
+// app.get('/', (req, res) => {
+//   // console.log("Hello");
+//   // res.send('Hello World!')
+//   res.render("index")
+
+// })
+
+// app.get('/dynamic/:x' , (req,res) =>{
+//   // req.params.x --> for geeting x
+//   res.send("It is running")
+// })
+
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`)
+// })
