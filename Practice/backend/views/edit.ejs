@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="/stylesheets/style.css"> -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body>
+    <div class="w-full text-white min-h-screen p-10 bg-zinc-900">
+        <a class="text-blue-500" href="/">GO BACK</a>
+        <form action="/update" method="post">
+            <input placeholder="Enter Title" class="block mt-5 border-1 rounded p-3 w-full" value="<%= filename %>" type="text" name="title">
+            <input placeholder="Enter Title" class="block hidden mt-5 border-1 rounded p-3 w-full" value="<%= filename %>" type="text" name="prev">
+            <textarea name="details" placeholder="Enter Details"
+                class="block border-1 w-full rounded h-[200px] p-3 resize-none mt-3"><%= filedata %></textarea>
+            <input type="submit" class="bg-yellow-500 pl-10 pr-10 pt-3 rounded-md pb-3 mt-3 " value="Update">
+        </form>
+    </div>
+
+    <!-- <script src="/javascripts/script.js"></script> -->
+</body>
+
+</html>

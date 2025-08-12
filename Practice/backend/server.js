@@ -23,10 +23,28 @@ app.get("/file/:filename", (req, res) => {
   })
 })
 
+app.get("/edit/:filename" , (req,res)=>{
+  
+  fs.readFile(`./files/${req.params.filename}`,"utf-8", function (err, filedata) {
+    res.render("edit",{filename: req.params.filename.split('.')[0] , filedata: filedata})  
+  })
+})
+
 app.post('/create', (req, res) => {
 
   fs.writeFile(`./files/${req.body.title.split(' ').join('')}.txt`, req.body.details, function (err) {
     res.redirect("/")
+  })
+
+})
+
+app.post('/update', (req, res) => {
+
+  fs.writeFile(`./files/${req.body.prev}.txt`, req.body.details, function (err) {
+    
+    fs.rename(`./files/${req.body.prev}.txt`, `./files/${req.body.title}.txt` , (err)=>{
+      res.redirect('/')
+    })
   })
 
 })
