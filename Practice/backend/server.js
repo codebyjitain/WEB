@@ -1,54 +1,115 @@
-// CRUD operation with ejs
+// authorization and authentication
+const cookieParser = require('cookie-parser')
 const express = require('express')
+const bcrypt = require('bcrypt')
 const app = express()
-const path = require('path')
-const connectDB = require('./db')
-const userModel = require('./models/user')
-const { default: mongoose } = require('mongoose')
+const jwt = require('jsonwebtoken')
 
-connectDB();
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-app.set("view engine" , "ejs")
-app.use(express.static(path.join(__dirname,'public')))
+app.use(cookieParser())
 
-app.get('/',(req,res)=>{
-  res.render("crud")  
-})
-
-app.get('/read',async (req,res)=>{
-  let allUsers =  await userModel.find()
-  res.render("read" , {allUsers : allUsers})  
-})
-
-app.post('/create' , async (req,res) =>{
+app.get('/', (req,res)=>{
+  // res.cookie("jatin","kumar")
   
-  const {name , email , image} = req.body;
-  const user = userModel({name,email,image});
-  await user.save();
-  res.redirect('/')
-})
 
-app.get('/delete/:_id',async (req,res)=>{
+  // bcrypt to password encryption
+  // bcrypt.genSalt(10, function (err,salt) {
+  //   bcrypt.hash("jatin" , salt , function(err,hash){
+  //     console.log(hash)
+  //   })
+  // })
+
+  // bcrypt to password decryption for check password matches
+  // bcrypt.compare("jatin","$2b$10$XRjjEbdVd5nbbIZWOQXJ7.FPnUR.J42mOKH2X2CBAo4nOQEQoeoKC" , function (err,result) {
+  //   console.log(result)    
+  // })
+
+
+  // using jwt ->secret is very important and unique very important 
+  const check = jwt.sign({email: "jatin@gmail.com"}, "secret" )
+  console.log(check)
+  res.cookie("token" , check)
+  res.send("Done")
   
-  await userModel.findOneAndDelete({_id : req.params._id})
-  res.redirect("/read")
-})
 
-app.get('/edit/:_id',async (req,res)=>{
-  let user = await userModel.findById(req.params._id)
-  console.log(user)
-  res.render("edituser", {user: user , id : req.params._id})
-})
-
-app.post('/update' , async (req,res) =>{
+  // verify jwt token
   
-  const {name , id , email , image} = req.body;
-  const user = await userModel.findOneAndUpdate({_id:id},{name,email,image});
-  res.redirect('/')
+  
 })
 
-app.listen(3000)              
+app.get('/another', (req,res)=>{
+  // console.log(req.cookies)
+  const verify = jwt.verify(req.cookies.token , "secret")
+  console.log(verify)
+  res.send("Done")
+})
+
+app.listen(3000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// CRUD operation with ejs
+// const express = require('express')
+// const app = express()
+// const path = require('path')
+// const connectDB = require('./db')
+// const userModel = require('./models/user')
+// const { default: mongoose } = require('mongoose')
+
+// connectDB();
+// app.use(express.json())
+// app.use(express.urlencoded({extended:true}))
+// app.set("view engine" , "ejs")
+// app.use(express.static(path.join(__dirname,'public')))
+
+// app.get('/',(req,res)=>{
+//   res.render("crud")  
+// })
+
+// app.get('/read',async (req,res)=>{
+//   let allUsers =  await userModel.find()
+//   res.render("read" , {allUsers : allUsers})  
+// })
+
+// app.post('/create' , async (req,res) =>{
+  
+//   const {name , email , image} = req.body;
+//   const user = userModel({name,email,image});
+//   await user.save();
+//   res.redirect('/')
+// })
+
+// app.get('/delete/:_id',async (req,res)=>{
+  
+//   await userModel.findOneAndDelete({_id : req.params._id})
+//   res.redirect("/read")
+// })
+
+// app.get('/edit/:_id',async (req,res)=>{
+//   let user = await userModel.findById(req.params._id)
+//   console.log(user)
+//   res.render("edituser", {user: user , id : req.params._id})
+// })
+
+// app.post('/update' , async (req,res) =>{
+  
+//   const {name , id , email , image} = req.body;
+//   const user = await userModel.findOneAndUpdate({_id:id},{name,email,image});
+//   res.redirect('/')
+// })
+
+// app.listen(3000)              
 
 
 
