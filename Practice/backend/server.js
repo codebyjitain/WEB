@@ -1,49 +1,145 @@
-// authorization and authentication
-const cookieParser = require('cookie-parser')
+// Small user create and login using authorization and authentication and mongoDB
 const express = require('express')
-const bcrypt = require('bcrypt')
 const app = express()
+const path = require('path')
+const connectDB = require('./db')
+const userModel = require('./models/userSignup')
+const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser')
 
+connectDB();
+
+app.use(express.json())
+app.use(express.urlencoded({extended : true}))
+app.set("view engine" , "ejs")
+app.use(express.static(path.join(__dirname,'public')))
 app.use(cookieParser())
 
-app.get('/', (req,res)=>{
-  // res.cookie("jatin","kumar")
-  
 
-  // bcrypt to password encryption
-  // bcrypt.genSalt(10, function (err,salt) {
-  //   bcrypt.hash("jatin" , salt , function(err,hash){
-  //     console.log(hash)
-  //   })
-  // })
-
-  // bcrypt to password decryption for check password matches
-  // bcrypt.compare("jatin","$2b$10$XRjjEbdVd5nbbIZWOQXJ7.FPnUR.J42mOKH2X2CBAo4nOQEQoeoKC" , function (err,result) {
-  //   console.log(result)    
-  // })
-
-
-  // using jwt ->secret is very important and unique very important 
-  const check = jwt.sign({email: "jatin@gmail.com"}, "secret" )
-  console.log(check)
-  res.cookie("token" , check)
-  res.send("Done")
-  
-
-  // verify jwt token
-  
-  
+app.get('/',(req,res)=>{
+  res.render("usersignup")
 })
 
-app.get('/another', (req,res)=>{
-  // console.log(req.cookies)
-  const verify = jwt.verify(req.cookies.token , "secret")
-  console.log(verify)
-  res.send("Done")
+app.post('/create',(req,res)=>{
+  const {name , email , password} = req.body
+  bcrypt.genSalt(10, function (err,salt) {
+    bcrypt.hash(password , salt, async (err,hash) => {
+      const newUser =  userModel({
+        name,
+        email,
+        password: hash
+      })
+
+      await newUser.save()
+
+      const token = jwt.sign({email : email} , "secret")
+      res.cookie("token" , token)
+      res.redirect("/")
+    })
+  })  
 })
+
+app.get('/login' , (req,res)=>{
+  res.render("login")
+})
+
+app.get('/loginuser' , async (req,res)=>{
+  const {email , password} = req.query
+  const data = await userModel.findOne({email : email})
+  const verify = jwt.verify(req.cookies.token,"secret")
+  if(verify.email === email){
+    bcrypt.compare(password,data.password,function (err,result) {
+    if(result){   
+      res.send("Logged In")
+    }
+    else{
+      res.send("Something is Wrong")
+    }
+  })
+  }else{
+    res.send("Email or Password is Wrong")
+  }
+})
+
+app.get('/logout', (req,res)=>{
+  res.cookie("token", "")
+  res.send("Logged Out")
+})
+
 
 app.listen(3000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// authorization and authentication
+// const cookieParser = require('cookie-parser')
+// const express = require('express')
+// const bcrypt = require('bcrypt')
+// const app = express()
+// const jwt = require('jsonwebtoken')
+
+// app.use(cookieParser())
+
+// app.get('/', (req,res)=>{
+//   // res.cookie("jatin","kumar")
+  
+
+//   // bcrypt to password encryption
+//   // bcrypt.genSalt(10, function (err,salt) {
+//   //   bcrypt.hash("jatin" , salt , function(err,hash){
+//   //     console.log(hash)
+//   //   })
+//   // })
+
+//   // bcrypt to password decryption for check password matches
+//   // bcrypt.compare("jatin","$2b$10$XRjjEbdVd5nbbIZWOQXJ7.FPnUR.J42mOKH2X2CBAo4nOQEQoeoKC" , function (err,result) {
+//   //   console.log(result)    
+//   // })
+
+
+//   // using jwt ->secret is very important and unique very important 
+//   const check = jwt.sign({email: "jatin@gmail.com"}, "secret" )
+//   console.log(check)
+//   res.cookie("token" , check)
+//   res.send("Done")
+  
+
+//   // verify jwt token
+  
+  
+// })
+
+// app.get('/another', (req,res)=>{
+//   // console.log(req.cookies)
+//   const verify = jwt.verify(req.cookies.token , "secret")
+//   console.log(verify)
+//   res.send("Done")
+// })
+
+// app.listen(3000)
 
 
 
