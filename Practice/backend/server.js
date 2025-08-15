@@ -1,74 +1,139 @@
-// Small user create and login using authorization and authentication and mongoDB
+// data Association
 const express = require('express')
 const app = express()
-const path = require('path')
+const ownerModel = require('./models/owner')
+const productModel = require('./models/product')
 const connectDB = require('./db')
-const userModel = require('./models/userSignup')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const cookieParser = require('cookie-parser')
-
-connectDB();
-
-app.use(express.json())
-app.use(express.urlencoded({extended : true}))
-app.set("view engine" , "ejs")
-app.use(express.static(path.join(__dirname,'public')))
-app.use(cookieParser())
 
 
-app.get('/',(req,res)=>{
-  res.render("usersignup")
-})
+connectDB()
 
-app.post('/create',(req,res)=>{
-  const {name , email , password} = req.body
-  bcrypt.genSalt(10, function (err,salt) {
-    bcrypt.hash(password , salt, async (err,hash) => {
-      const newUser =  userModel({
-        name,
-        email,
-        password: hash
-      })
-
-      await newUser.save()
-
-      const token = jwt.sign({email : email} , "secret")
-      res.cookie("token" , token)
-      res.redirect("/")
-    })
-  })  
-})
-
-app.get('/login' , (req,res)=>{
-  res.render("login")
-})
-
-app.get('/loginuser' , async (req,res)=>{
-  const {email , password} = req.query
-  const data = await userModel.findOne({email : email})
-  const verify = jwt.verify(req.cookies.token,"secret")
-  if(verify.email === email){
-    bcrypt.compare(password,data.password,function (err,result) {
-    if(result){   
-      res.send("Logged In")
-    }
-    else{
-      res.send("Something is Wrong")
-    }
+app.get("/create",async(req,res)=>{
+  const owner = ownerModel({
+    ownername : "temp",
+    email: "temp@gmail.com"
   })
-  }else{
-    res.send("Email or Password is Wrong")
-  }
+  await owner.save();
+  res.send("Done")
 })
 
-app.get('/logout', (req,res)=>{
-  res.cookie("token", "")
-  res.send("Logged Out")
+app.get("/product",async(req,res)=>{
+  const product = productModel({
+    productname : "Sampoo",
+    ownerId : "689edd25f1098e1362617893" 
+  })
+  await product.save();
+
+  const owner = await ownerModel.findOne({_id : "689edd25f1098e1362617893"})
+  owner.products.push(product._id)
+  await owner.save()
+
+  res.send("Done")
 })
 
+app.get("/",async(req,res)=>{
+  
+  res.send("Done")
+})
 
 app.listen(3000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Small user create and login using authorization and authentication and mongoDB
+// const express = require('express')
+// const app = express()
+// const path = require('path')
+// const connectDB = require('./db')
+// const userModel = require('./models/userSignup')
+// const bcrypt = require('bcrypt')
+// const jwt = require('jsonwebtoken')
+// const cookieParser = require('cookie-parser')
+
+// connectDB();
+
+// app.use(express.json())
+// app.use(express.urlencoded({extended : true}))
+// app.set("view engine" , "ejs")
+// app.use(express.static(path.join(__dirname,'public')))
+// app.use(cookieParser())
+
+
+// app.get('/',(req,res)=>{
+//   res.render("usersignup")
+// })
+
+// app.post('/create',(req,res)=>{
+//   const {name , email , password} = req.body
+//   bcrypt.genSalt(10, function (err,salt) {
+//     bcrypt.hash(password , salt, async (err,hash) => {
+//       const newUser =  userModel({
+//         name,
+//         email,
+//         password: hash
+//       })
+
+//       await newUser.save()
+
+//       const token = jwt.sign({email : email} , "secret")
+//       res.cookie("token" , token)
+//       res.redirect("/")
+//     })
+//   })  
+// })
+
+// app.get('/login' , (req,res)=>{
+//   res.render("login")
+// })
+
+// app.get('/loginuser' , async (req,res)=>{
+//   const {email , password} = req.query
+//   const data = await userModel.findOne({email : email})
+//   const verify = jwt.verify(req.cookies.token,"secret")
+//   if(verify.email === email){
+//     bcrypt.compare(password,data.password,function (err,result) {
+//     if(result){   
+//       res.send("Logged In")
+//     }
+//     else{
+//       res.send("Something is Wrong")
+//     }
+//   })
+//   }else{
+//     res.send("Email or Password is Wrong")
+//   }
+// })
+
+// app.get('/logout', (req,res)=>{
+//   res.cookie("token", "")
+//   res.send("Logged Out")
+// })
+
+
+// app.listen(3000)
 
 
 
