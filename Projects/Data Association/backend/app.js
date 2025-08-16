@@ -101,15 +101,41 @@ app.post("/post",loggedIn , async (req,res) =>{
 
 })
 
-app.get("/like/:post" , loggedIn , async (req,res)=>{
+app.get("/like/:id" , loggedIn , async (req,res)=>{
     const user = await userModel.findOne({email : req.user.email})
     const post = await postModel.findOne({
-        user : user._id
-    })
-    post.likes.push(user._id)
+        _id : req.params.id
+    }).populate("user")
+    
+    if(post.likes.indexOf(user._id) === -1){
+        post.likes.push(user._id)
+    }
+    else{
+        post.likes.splice(post.likes.indexOf(user._id) , 1)
+    }
     await post.save()
-
+    
     res.redirect("/profile")
 })
+
+
+app.get("/edit/:id" , loggedIn , async (req,res)=>{
+    const user = await userModel.findOne({email : req.user.email})
+    const post = await postModel.findOne({_id : req.params.id})
+    
+    
+    res.render("edit" , {user , post})
+})
+
+app.post("/edit/:id" , loggedIn , async (req,res)=>{
+    const {content} = req.body
+    
+    const post = await postModel.findOneAndUpdate({_id : req.params.id}, {content : content})
+    res.redirect("/profile")
+})
+
+
+
+
 
 app.listen(3000)

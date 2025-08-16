@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken')
 
 const loggedIn = (req,res,next)=>{
-    console.log(req.cookies)
     
     if(req.cookies.token === "") res.redirect("/login")
     

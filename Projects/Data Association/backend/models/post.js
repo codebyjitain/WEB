@@ -7,17 +7,16 @@ const postSchema = mongoose.Schema({
         ref: "user"
     },
     date: {
-        type : Date,
-        default : Date.now
+        type: Date,
+        default: Date.now
     },
     content: String,
-    likes : [
+    likes: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            unique: true,
             ref: "user"
         }
     ]
 })
 
-module.exports = mongoose.model("post" , postSchema)
+module.exports = mongoose.model("post", postSchema)
