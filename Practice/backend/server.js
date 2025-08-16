@@ -1,42 +1,115 @@
-// data Association
+// multer 
 const express = require('express')
 const app = express()
-const ownerModel = require('./models/owner')
-const productModel = require('./models/product')
-const connectDB = require('./db')
+const path = require('path')
+const multer = require('multer')
+const crypto = require('crypto')
+
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
+app.set("view engine" , "ejs")
+app.use(express.static(path.join(__dirname,'public')))
 
 
-connectDB()
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public /images/uploads')
+  },
+  filename: function (req, file, cb) {
 
-app.get("/create",async(req,res)=>{
-  const owner = ownerModel({
-    ownername : "temp",
-    email: "temp@gmail.com"
-  })
-  await owner.save();
-  res.send("Done")
+crypto.randomBytes(12,function (err,buffer) {
+    const fn = buffer.toString("hex") + path.extname(file.originalname)
+    
+    cb(null,fn)
+  })   
+  }
 })
 
-app.get("/product",async(req,res)=>{
-  const product = productModel({
-    productname : "Sampoo",
-    ownerId : "689edd25f1098e1362617893" 
-  })
-  await product.save();
+const upload = multer({ storage: storage })
 
-  const owner = await ownerModel.findOne({_id : "689edd25f1098e1362617893"})
-  owner.products.push(product._id)
-  await owner.save()
-
-  res.send("Done")
+app.post('/upload', upload.single("image") , (req,res)=>{
+  console.log(req.file)
+  res.redirect("/test")
 })
 
-app.get("/",async(req,res)=>{
+app.get('/test' , (req,res)=>{
+  res.render("test")
+})
+
+
+
+app.get('/',(req,res)=>{
+  res.send("Hello")
+})
+
+app.listen(3000)              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// data Association
+// const express = require('express')
+// const app = express()
+// const ownerModel = require('./models/owner')
+// const productModel = require('./models/product')
+// const connectDB = require('./db')
+
+
+// connectDB()
+
+// app.get("/create",async(req,res)=>{
+//   const owner = ownerModel({
+//     ownername : "temp",
+//     email: "temp@gmail.com"
+//   })
+//   await owner.save();
+//   res.send("Done")
+// })
+
+// app.get("/product",async(req,res)=>{
+//   const product = productModel({
+//     productname : "Sampoo",
+//     ownerId : "689edd25f1098e1362617893" 
+//   })
+//   await product.save();
+
+//   const owner = await ownerModel.findOne({_id : "689edd25f1098e1362617893"})
+//   owner.products.push(product._id)
+//   await owner.save()
+
+//   res.send("Done")
+// })
+
+// app.get("/",async(req,res)=>{
   
-  res.send("Done")
-})
+//   res.send("Done")
+// })
 
-app.listen(3000)
+// app.listen(3000)
 
 
 
