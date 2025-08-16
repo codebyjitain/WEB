@@ -10,7 +10,8 @@ const postModel = require('./models/post')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const loggedIn = require('./middlewares/loggedIn')
-const post = require('./models/post')
+const upload = require('./config/multerconfig')
+
 
 dotenv.config()
 // connect DB
@@ -23,24 +24,6 @@ app.use(express.urlencoded({extended : true}))
 app.use(cookieParser())
 app.set("view engine" , "ejs")
 app.use(express.static(path.join(__dirname,"public")))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -66,7 +49,7 @@ app.post('/create' , (req,res)=>{
 
             const token = jwt .sign({email: email}, process.env.JWT_SECRET_KEY)
             res.cookie("token" , token)
-            res.redirect("/login")
+            res.redirect("/profile")
         })
         
     })
@@ -155,7 +138,18 @@ app.post("/edit/:id" , loggedIn , async (req,res)=>{
 })
 
 
+app.get('/profile/upload' , (req,res)=>{
+    res.render("upload")
+})
 
+app.post('/upload',loggedIn ,upload.single("image"), async (req,res)=>{
+    const user = await userModel.findOne({email: req.user.email})
+
+    user.profilepic = req.file.filename
+    await user.save()
+
+    res.redirect("/profile")
+})
 
 
 app.listen(3000)
