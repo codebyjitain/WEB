@@ -88,13 +88,13 @@ const NewProduct = () => {
           <div className='flex w-[35%] justify-between mt-3 flex-wrap gap-1'>
             <input onChange={(e) => {
               setProductName(e.target.value)
-            }} className='w-full px-4 py-2 bg-zinc-200' type="text" placeholder='Product Name' />
+            }} value={productName} className='w-full px-4 py-2 bg-zinc-200' type="text" placeholder='Product Name' />
             <input onChange={(e) => {
               setProductPrice(e.target.value)
-            }} className=' px-4 py-2 bg-zinc-200' type="number" placeholder='Product Price' />
+            }} value={productPrice} className=' px-4 py-2 bg-zinc-200' type="number" placeholder='Product Price' />
             <input onChange={(e) => {
               setDiscountPrice(e.target.value)
-            }} type="number" placeholder='Discount Price' className=' px-4 py-2 bg-zinc-200' />
+            }} value={discountPrice} type="number" placeholder='Discount Price' className=' px-4 py-2 bg-zinc-200' />
           </div>
 
           <h2 className='text-2xl mt-20'>Panel Details</h2>
@@ -105,21 +105,21 @@ const NewProduct = () => {
               <label htmlFor="backgroundcolor">Background Color</label>
               <input onChange={(e) => {
                 setBackgroundColor(e.target.value)
-              }} className='bg-zinc-200' type="color" id='backgroundcolor' />
+              }} value={backgroundColor} className='bg-zinc-200' type="color" id='backgroundcolor' />
             </div>
             <div className='flex items-center justify-between'>
 
               <label htmlFor="textcolor">Text Color</label>
               <input onChange={(e) => {
                 settextColor(e.target.value)
-              }} className='bg-zinc-200' type="color" id='textcolor' />
+              }} value={textColor} className='bg-zinc-200' type="color" id='textcolor' />
             </div>
             <div className='flex items-center justify-between'>
 
               <label htmlFor="panelcolor">Panel Color</label>
               <input onChange={(e) => {
                 setPanelColor(e.target.value)
-              }} className='bg-zinc-200' type="color" id='panelcolor' />
+              }} value={panelColor} className='bg-zinc-200' type="color" id='panelcolor' />
 
             </div>
             <button onClick={(e) => {

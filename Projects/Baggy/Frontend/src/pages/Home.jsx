@@ -15,8 +15,12 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/product`)
+        console.log(response.data)
         if (response.status === 200) {
           dispatch(setProductData(response.data.data))
+        }
+        if(response.status === 404) {
+          toast.error('No products available')
         }
         setProducts(response.data.data)
       } catch (error) {
