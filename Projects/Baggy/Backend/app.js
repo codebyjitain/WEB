@@ -5,31 +5,23 @@ const ownerRoute = require('./routes/ownerRoute')
 const userRoute = require('./routes/userRoute')
 const productRoute = require('./routes/productRoute')
 const indexRoute = require('./routes/indexRoute')
-const expressSession = require('express-session')
-const flash = require('connect-flash')
 const cors = require('cors')
+const path = require('path')
 
 app.use(cors({
-    origin: 'http://localhost:5173', // Replace with your Vite dev server URL
     credentials: true // Crucial for sending/receiving cookies
 }));
 
 connectDB()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(
-    expressSession({
-        resave: false,
-        saveUninitialized: false,
-        secret: process.env.EXPRESS_SESSION_SECRET,
-    })
-)
-app.use(flash())
+app.use("/image",express.static(path.join(__dirname , 'public/images/uploads')))
+
 app.use("/", indexRoute)
 app.use('/owner', ownerRoute)
-app.use('/product', productRoute)
+app.use('/product',  productRoute)
 app.use('/user', userRoute)
-
+    
 app.listen(3000)
 
 

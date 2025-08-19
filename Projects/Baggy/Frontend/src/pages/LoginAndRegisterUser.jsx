@@ -1,12 +1,19 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import {setUserData } from '../redux/slices/userSlice'
 
 const LoginAndRegisterUser = () => {
 
     const [fullname, setFullname] = useState('')
+    const [registerEmail,setRegisterEmail] = useState('')
+    const [registerPassword, setRegisterPassword] = useState('')
+
+
     const [email,setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const dispatch = useDispatch()
 
     const navigate = useNavigate()
 
@@ -15,15 +22,16 @@ const LoginAndRegisterUser = () => {
         try {
         const userData = {
             fullname : fullname,
-            email : email,
-            password : password
+            email : registerEmail,
+            password : registerPassword
         }
 
         const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register` , userData)
-        console.log(response.data)
 
         if(response.status === 201){
-            localStorage.setItem("token", response.data.token)
+            dispatch(setUserData(response.data.user))
+            localStorage.setItem("token", response.data.user.token)
+            navigate('/')
         }    
         } catch (err) {
             console.log(err.message)   
@@ -45,8 +53,9 @@ const LoginAndRegisterUser = () => {
 
         const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`,userData)
         if(response.status === 200){
-            console.log(response.data.user.token)
+            dispatch(setUserData(response.data.user))
             localStorage.setItem("token", response.data.user.token)
+            navigate('/')
         }
         setEmail('')
         setPassword('')
@@ -69,11 +78,11 @@ const LoginAndRegisterUser = () => {
                         <input value={fullname} onChange={(e) =>{
                             setFullname(e.target.value)
                         }} type="text" placeholder='Full Name' className='bg-white p-2 w-full rounded ' />
-                        <input value={email} onChange={(e)=>{
-                            setEmail(e.target.value)
+                        <input value={registerEmail} onChange={(e)=>{
+                            setRegisterEmail(e.target.value)
                         }} type="email" placeholder='Email' className='bg-white p-2 w-full rounded ' />
-                        <input value={password} onChange={(e)=>{
-                            setPassword(e.target.value)
+                        <input value={registerPassword} onChange={(e)=>{
+                            setRegisterPassword(e.target.value)
                         }} type="password" placeholder='Password' className='bg-white p-2 w-full rounded ' />
                         <button onClick={(e)=>registerClick(e)} className='p-2 text-white bg-blue-400 w-fit rounded-4xl px-4'>
                             Create My Account

@@ -11,5 +11,11 @@ const productSchema = mongoose.Schema({
     },
     bgcolor : String,
     panelcolor: String,
-    textcolor: String
+    textcolor: String,
+    created : {
+        type: Date,
+        default: Date.now
+    }
 })
+
+module.exports = mongoose.model("product",productSchema)

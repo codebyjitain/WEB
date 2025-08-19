@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
+const isLoggedIn = require('../middlewares/isLoggedIn')
 
-router.get("/" , (req,res)=>{
-    let error = req.flash("error")
-    res.send("Done")
+router.get("/" , isLoggedIn, (req,res)=>{
+    res.send("hello")
 })
 
-router.get("/shop" , (req,res)=>{
-
+router.get("/shop" ,(req,res)=>{
+    res.send("Heloo")
 })
 module.exports = router

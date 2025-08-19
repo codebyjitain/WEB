@@ -1,8 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Bag from '../components/Bag'
+import { useEffect } from 'react'
+import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { setProductData } from '../redux/slices/productSlice'
+import { toast } from 'react-toastify'
 
 const Home = () => {
+  const dispatch = useDispatch()
+  // const products = useSelector((state) => state.product.data)
+  const [products,setProducts] = useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/product`)
+        if (response.status === 200) {
+          dispatch(setProductData(response.data.data))
+        }
+        setProducts(response.data.data)
+      } catch (error) {
+        toast.error('Failed to fetch products')
+      }
+    }
+    fetchData()
+  }, [])
+
+
   return (
     <div>
       <Navbar title="Shop" />
@@ -33,15 +57,19 @@ const Home = () => {
 
         </div>
         <div className='w-[82%] flex flex-wrap gap-20'>
-          <Bag />
-          <Bag />
-          <Bag />
-          <Bag />
-          <Bag />
-          <Bag />
-          <Bag />
-          <Bag />
-          <Bag />
+          {products.map((product, index) => (
+            <Bag
+              key={index}
+              id={product._id}
+              image={`${import.meta.env.VITE_BASE_URL}/image/${product.image}`}
+              name={product.name}
+              price={product.price}
+              panelColor={product.panelcolor}
+              textColor={product.textcolor}
+              bgColor={product.bgcolor}
+            />
+          ))}
+
 
         </div>
       </div>

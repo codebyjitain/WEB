@@ -21,7 +21,7 @@ router.post("/create" , async (req,res)=>{
         email,
         password
     })
-    res.send("Done")
+    res.status(201).json({owner})
 })
 
 module.exports = router

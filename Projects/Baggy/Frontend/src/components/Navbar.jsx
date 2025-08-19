@@ -9,13 +9,12 @@ const Navbar = ({title}) => {
 
                 <h1 className='text-3xl capitalize'>{title}.</h1>
                 <div className='flex w-[30%] justify-between text-xl'>
-                    <div className='flex gap-3'>
-                        <NavLink to='/home'>Home</NavLink>
-                        <NavLink to='/newproduct'>Product</NavLink>
+                    <div>
+                        <NavLink to='/'>Home</NavLink>
                     </div>
                     <div className='flex gap-5'>
                         <NavLink to='/cart'>Cart</NavLink>
-                        <NavLink to='/account'>My Account</NavLink>
+                        <NavLink className='text-red-500' to='/logout'>Logout</NavLink>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,6 @@ const ownerSchema = mongoose.Schema({
             Ref: "product"
         }
     ],
-    
     picture: String
 })
 
