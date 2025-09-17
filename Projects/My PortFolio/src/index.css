@@ -1,9 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --color-color1: #0d1b2a;
-  --color-color2: #1b263b;
-  --color-color3: #415a77;
-  --color-color4: #778da9;
+  --color-color1: #d7d7d7;
+  --color-color2: #000000;
+  --color-color3: #c4c4c4;
+  --color-color4: #909090;
   --color-color5: #e0e1dd;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+html {
+  scroll-behavior: smooth;
 }
